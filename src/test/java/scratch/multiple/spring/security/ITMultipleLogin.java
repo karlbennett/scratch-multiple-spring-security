@@ -14,6 +14,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.client.Entity.form;
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.hamcrest.Matchers.is;
@@ -63,7 +64,7 @@ public class ITMultipleLogin {
         final MultivaluedMap<String, String> body = new MultivaluedHashMap<>();
 
         // Given
-        body.add("username", "user");
+        body.add("username", "user1");
         body.add("password", "password");
 
         // When
@@ -76,10 +77,8 @@ public class ITMultipleLogin {
         assertThat(login.getStatus(), is(OK.getStatusCode()));
         assertThat(secure1.getStatus(), is(OK.getStatusCode()));
         assertThat(secure1.readEntity(String.class), is("one secure"));
-        assertThat(secure2.getStatus(), is(OK.getStatusCode()));
-        assertThat(secure2.readEntity(String.class), is("two secure"));
-        assertThat(secure3.getStatus(), is(OK.getStatusCode()));
-        assertThat(secure3.readEntity(String.class), is("secure"));
+        assertThat(secure2.getStatus(), is(FORBIDDEN.getStatusCode()));
+        assertThat(secure3.getStatus(), is(FORBIDDEN.getStatusCode()));
     }
 
     @Test
@@ -88,7 +87,7 @@ public class ITMultipleLogin {
         final MultivaluedMap<String, String> body = new MultivaluedHashMap<>();
 
         // Given
-        body.add("username", "user");
+        body.add("username", "user2");
         body.add("password", "password");
 
         // When
@@ -99,12 +98,10 @@ public class ITMultipleLogin {
 
         // Then
         assertThat(login.getStatus(), is(OK.getStatusCode()));
-        assertThat(secure1.getStatus(), is(OK.getStatusCode()));
-        assertThat(secure1.readEntity(String.class), is("one secure"));
+        assertThat(secure1.getStatus(), is(FORBIDDEN.getStatusCode()));
         assertThat(secure2.getStatus(), is(OK.getStatusCode()));
         assertThat(secure2.readEntity(String.class), is("two secure"));
-        assertThat(secure3.getStatus(), is(OK.getStatusCode()));
-        assertThat(secure3.readEntity(String.class), is("secure"));
+        assertThat(secure3.getStatus(), is(FORBIDDEN.getStatusCode()));
     }
 
     @Test
@@ -113,7 +110,7 @@ public class ITMultipleLogin {
         final MultivaluedMap<String, String> body = new MultivaluedHashMap<>();
 
         // Given
-        body.add("username", "user");
+        body.add("username", "user3");
         body.add("password", "password");
 
         // When
@@ -124,10 +121,8 @@ public class ITMultipleLogin {
 
         // Then
         assertThat(login.getStatus(), is(OK.getStatusCode()));
-        assertThat(secure1.getStatus(), is(OK.getStatusCode()));
-        assertThat(secure1.readEntity(String.class), is("one secure"));
-        assertThat(secure2.getStatus(), is(OK.getStatusCode()));
-        assertThat(secure2.readEntity(String.class), is("two secure"));
+        assertThat(secure1.getStatus(), is(FORBIDDEN.getStatusCode()));
+        assertThat(secure2.getStatus(), is(FORBIDDEN.getStatusCode()));
         assertThat(secure3.getStatus(), is(OK.getStatusCode()));
         assertThat(secure3.readEntity(String.class), is("secure"));
     }

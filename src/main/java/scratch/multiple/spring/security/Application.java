@@ -52,6 +52,7 @@ public class Application {
             http.csrf().disable()
                 .antMatcher("/one/**")
                 .authorizeRequests()
+                .antMatchers("/one/**").hasAuthority("ROLE_ONE")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage(ONE_LOGIN).permitAll()
@@ -73,6 +74,7 @@ public class Application {
             http.csrf().disable()
                 .antMatcher("/two/**")
                 .authorizeRequests()
+                .antMatchers("/two/**").hasAuthority("ROLE_TWO")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage(TWO_LOGIN).permitAll()
@@ -94,6 +96,7 @@ public class Application {
             http.csrf().disable()
                 .antMatcher("/**")
                 .authorizeRequests()
+                .antMatchers("/**").hasAuthority("ROLE_THREE")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage(LOGIN).permitAll()
@@ -106,7 +109,9 @@ public class Application {
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
+        auth.inMemoryAuthentication().withUser("user1").password("password").roles("ONE")
+            .and().withUser("user2").password("password").roles("TWO")
+            .and().withUser("user3").password("password").roles("THREE");
     }
 
     @RequestMapping(path = "/one/secure", method = GET, produces = TEXT_PLAIN_VALUE)
